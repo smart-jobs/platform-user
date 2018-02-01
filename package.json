@@ -1,0 +1,45 @@
+{
+  "name": "smart-user",
+  "version": "1.0.0",
+  "description": "smart jobs platform user service",
+  "private": true,
+  "dependencies": {
+    "egg": "^2.3.0",
+    "egg-scripts": "^2.5.0",
+    "naf-framework-mongoose": "^0.0.24"
+  },
+  "devDependencies": {
+    "autod": "^3.0.1",
+    "autod-egg": "^1.1.0",
+    "egg-bin": "^4.3.7",
+    "egg-ci": "^1.8.0",
+    "egg-mock": "^3.14.0",
+    "eslint": "^4.16.0",
+    "eslint-config-egg": "^6.0.0",
+    "webstorm-disable-index": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "scripts": {
+    "start": "egg-scripts start --daemon --title=paltform-user",
+    "stop": "egg-scripts stop --title=paltform-user",
+    "dev": "egg-bin dev",
+    "debug": "egg-bin debug",
+    "test": "npm run lint -- --fix && npm run test-local",
+    "test-local": "egg-bin test",
+    "cov": "egg-bin cov",
+    "lint": "eslint .",
+    "ci": "npm run lint && npm run cov",
+    "autod": "autod"
+  },
+  "ci": {
+    "version": "8"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "dyg",
+  "license": "MIT"
+}
