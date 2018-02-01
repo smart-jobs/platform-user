@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "smart jobs platform user service",
   "private": true,
+  "egg": {
+    "framework": "naf-framework-mongoose"
+  },
   "dependencies": {
     "egg": "^2.3.0",
     "egg-scripts": "^2.5.0",
