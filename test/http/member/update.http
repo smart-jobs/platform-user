@@ -1,0 +1,14 @@
+#用户注册
+POST http://localhost:7001/member/update?_id=5a7418ce838df436947d7aa6 HTTP/1.1
+#POST http://oa.chinahuian.cn/platform/member/update?_id=5a7418ce838df436947d7aa6 HTTP/1.1
+content-type: application/json
+Accept: application/json
+
+{
+  "contact.phone": "13500000000",
+  "contact.email": "zhangsanfeng@qq.com",
+  "contact.qq": "10000",
+  "contact.weixin": "zhangsanfeng",
+  "contact.postcode": "000000",
+  "contact.address": "湖北省武当山"
+}

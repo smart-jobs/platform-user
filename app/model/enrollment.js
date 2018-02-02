@@ -13,8 +13,8 @@ const SchemaDefine = {
   ksh: { type: String, maxLength: 64 }, // 考生号
   membership: { // 用户注册信息
     userid: ObjectId, // 用户注册信息ID
-    status: String, // 学籍注册状态：0-正常；1-升学
     createTime: Date, // 注册时间（关联学籍数据时间）
+    status: String, // 学籍注册状态：0-正常；1-升学
   },
   // 当前学籍
   enrollment: {
@@ -63,6 +63,7 @@ const SchemaDefine = {
       type: Number,
       default: 0, // 0-正常学籍；1-标记删除
     },
+    comment: String,
   }
 };
 const schema = new Schema(SchemaDefine);

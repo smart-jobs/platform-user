@@ -1,0 +1,6 @@
+#用户注册
+GET http://localhost:7001/member/fetch?_id=5a7418ce838df436947d7aa6 HTTP/1.1
+#GET http://localhost:7001/member/fetch?sfzh=1234567890 HTTP/1.1
+#GET http://oa.chinahuian.cn/platform/member/fetch=1234567890 HTTP/1.1
+content-type: application/json
+Accept: application/json

@@ -1,0 +1,23 @@
+#用户注册
+POST http://localhost:7001/member/create HTTP/1.1
+#POST http://oa.chinahuian.cn/platform/member/create HTTP/1.1
+content-type: application/json
+Accept: application/json
+
+{
+  "xm": "张三丰",
+  "xb": "男",
+  "sfzh": "1234567890",
+  "contact": {
+    "phone": "13500000000",
+    "email": "10000@qq.com",
+    "qq": "10000",
+    "weixin": "zsf",
+    "postcode": "000000",
+    "address": "湖北省武当山"
+  },
+  "account": {
+    "mobile": "13500000000",
+    "credential": "123456"
+  }
+}
