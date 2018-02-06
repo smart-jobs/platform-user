@@ -1,6 +1,6 @@
 #用户注册
-POST http://localhost:7001/member/update?_id=5a7418ce838df436947d7aa6 HTTP/1.1
-#POST http://oa.chinahuian.cn/platform/member/update?_id=5a7418ce838df436947d7aa6 HTTP/1.1
+#POST http://localhost:7001/member/update?_id=5a7418ce838df436947d7aa6 HTTP/1.1
+POST http://oa.chinahuian.cn/platform/user/member/update?_id=5a741e52ddccf17e5562d188 HTTP/1.1
 content-type: application/json
 Accept: application/json
 

@@ -1,6 +1,6 @@
 #用户注册
-POST http://localhost:7001/member/create HTTP/1.1
-#POST http://oa.chinahuian.cn/platform/member/create HTTP/1.1
+#POST http://localhost:7001/member/create HTTP/1.1
+POST http://oa.chinahuian.cn/platform/user/member/create HTTP/1.1
 content-type: application/json
 Accept: application/json
 
