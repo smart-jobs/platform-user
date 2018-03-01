@@ -51,14 +51,6 @@ const SchemaDefine = {
     bz: String, // 备注
   },
   meta: {
-    createTime: {
-      type: Date,
-      default: Date.now()
-    },
-    updateTime: {
-      type: Date,
-      default: Date.now()
-    },
     state: {// 学籍数据状态
       type: Number,
       default: 0, // 0-正常学籍；1-标记删除
@@ -66,7 +58,7 @@ const SchemaDefine = {
     comment: String,
   }
 };
-const schema = new Schema(SchemaDefine);
+const schema = new Schema(SchemaDefine, { timestamps: true });
 schema.index({ year: 1 });
 schema.index({ year: 1, yxdm: 1 });
 schema.index({ yxdm: 1 });

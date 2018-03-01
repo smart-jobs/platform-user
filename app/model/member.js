@@ -42,14 +42,6 @@ const SchemaDefine = {
     credential: { type: String, require: true, maxLength: 128 },
   },
   meta: {
-    createTime: {
-      type: Date,
-      default: Date.now()
-    },
-    updateTime: {
-      type: Date,
-      default: Date.now()
-    },
     state: {// 数据删除状态
       type: Number,
       default: 0, // 0-正常学籍；1-标记删除
@@ -57,7 +49,7 @@ const SchemaDefine = {
     comment: String,
   }
 };
-const schema = new Schema(SchemaDefine);
+const schema = new Schema(SchemaDefine, { timestamps: true });
 schema.index({ sfzh: 1 }, { unique: true });
 schema.index({ 'account.mobile': 1 }, { unique: true });
 schema.index({ 'account.email': 1 }, { unique: true });

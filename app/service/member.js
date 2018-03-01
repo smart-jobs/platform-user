@@ -2,8 +2,8 @@
 
 const ObjectID = require('mongodb').ObjectID;
 const assert = require('assert');
-const is = require('is-type-of');
-const { BusinessError, ErrorCode } = require('naf-core').Error;
+const { isObject, isNullOrUndefined } = require('naf-core').Util;
+const { BusinessError } = require('naf-core').Error;
 const { trimData } = require('naf-core').Util;
 const BaseService = require('./base.js');
 const { UserError, ErrorMessage, AccountError } = require('../util/error-code');
@@ -19,8 +19,8 @@ class MembershipService extends BaseService {
     assert(xm);
     assert(xb);
     assert(sfzh);
-    assert(is.object(account));
-    assert(is.object(contact));
+    assert(isObject(account));
+    assert(isObject(contact));
     assert(account.mobile);
     assert(account.credential);
 
@@ -30,11 +30,11 @@ class MembershipService extends BaseService {
 
     // TODO:检查数据是否存在
     const entity = await this.model.findOne({ sfzh }).exec();
-    if (!is.nullOrUndefined(entity)) throw new BusinessError(UserError.USER_EXISTED, ErrorMessage.USER_EXISTED);
+    if (!isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_EXISTED, ErrorMessage.USER_EXISTED);
 
     // TODO: 检查绑定账户是否存在
     const acc = [ 'openid', 'email', 'mobile' ]
-      .filter(f => !is.nullOrUndefined(account[f]));
+      .filter(f => !isNullOrUndefined(account[f]));
     assert(acc.length > 0, 'account字段必须包含至少一个有效信息');
     acc.forEach(async f => { await this.checkAccount(f, account[f]); });
 
@@ -56,7 +56,7 @@ class MembershipService extends BaseService {
 
     // TODO:检查数据是否存在
     const entity = await this.model.findById(ObjectID(_id)).exec();
-    if (is.nullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
+    if (isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
     const { account } = entity;
     assert(account);
 
@@ -69,7 +69,7 @@ class MembershipService extends BaseService {
         account[key] = data[key];
       }
     });
-    if (is.nullOrUndefined(account.mobile) && is.nullOrUndefined(account.email)) {
+    if (isNullOrUndefined(account.mobile) && isNullOrUndefined(account.email)) {
       throw new BusinessError(AccountError.empty.errcode, AccountError.empty.errmsg);
     }
     return await this.model.findByIdAndUpdate(ObjectID(_id), { $set: { account } }, { new: true }).exec();
@@ -83,7 +83,7 @@ class MembershipService extends BaseService {
 
     // TODO:检查数据是否存在
     const entity = await this.model.findById(ObjectID(_id)).exec();
-    if (is.nullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
+    if (isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
     const { account } = entity;
     assert(account);
 

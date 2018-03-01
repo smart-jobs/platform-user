@@ -2,7 +2,7 @@
 
 const ObjectID = require('mongodb').ObjectID;
 const assert = require('assert');
-const is = require('is-type-of');
+const { isNullOrUndefined } = require('naf-core').Util;
 const { BusinessError } = require('naf-core').Error;
 const service = require('naf-framework-mongoose').service;
 const { CrudService } = service;
@@ -16,7 +16,7 @@ class BaseService extends CrudService {
 
     // TODO:检查数据是否存在
     const entity = await this.model.findOne({ _id: ObjectID(id) }).exec();
-    if (is.nullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
+    if (isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
 
     // TODO:修改数据删除状态，不直接删除
     await this.model.fondOneAndUpdate({ _id: ObjectID(id) },
