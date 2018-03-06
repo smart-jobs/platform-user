@@ -3,121 +3,129 @@
 const ObjectID = require('mongodb').ObjectID;
 const assert = require('assert');
 const { isObject, isNullOrUndefined } = require('naf-core').Util;
-const { BusinessError } = require('naf-core').Error;
+const { BusinessError, ErrorCode } = require('naf-core').Error;
 const { trimData } = require('naf-core').Util;
 const BaseService = require('./base.js');
 const { UserError, ErrorMessage, AccountError } = require('../util/error-code');
+const { OperationType, BindStatus, MembershipStatus } = require('../util/constants');
 
 
 class MembershipService extends BaseService {
   constructor(ctx) {
     super(ctx, 'plat_user_member');
     this.model = ctx.model.Member;
+    this.mMem = this._model(this.model);
   }
 
-  async create({ xm, xb, sfzh, account, contact }) {
-    assert(xm);
-    assert(xb);
-    assert(sfzh);
-    assert(isObject(account));
-    assert(isObject(contact));
-    assert(account.mobile);
-    assert(account.credential);
-
-    const { mobile, email, credential } = account;
-    if (!contact.phone) contact.phone = mobile;
-    if (!contact.email) contact.email = email;
+  async create({ xm, xb, sfzh, password, contact }) {
+    assert(xm, 'xm不能为空');
+    assert(xb, 'xb性别不能为空');
+    assert(sfzh, 'sfzh不能为空');
+    assert(password, 'password不能为空');
+    assert(isObject(contact), 'contact必须为对象');
 
     // TODO:检查数据是否存在
     const entity = await this.model.findOne({ sfzh }).exec();
     if (!isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_EXISTED, ErrorMessage.USER_EXISTED);
 
-    // TODO: 检查绑定账户是否存在
-    const acc = [ 'openid', 'email', 'mobile' ]
-      .filter(f => !isNullOrUndefined(account[f]));
-    assert(acc.length > 0, 'account字段必须包含至少一个有效信息');
-    acc.forEach(async f => { await this.checkAccount(f, account[f]); });
-
     // TODO:保存数据，初始记录不包含微信绑定信息
-    const res = await this._create({ xm, xb, sfzh, contact, account: { mobile, email, credential } });
+    const res = await this.mMem._create({ xm, xb, sfzh, password, contact, status: MembershipStatus.NORMAL });
     return res;
   }
 
-  async checkAccount(key, val) {
-    const entity = await this.model.findOne({ [key]: val }).exec();
-    if (entity) throw new BusinessError(AccountError[key].errcode, AccountError[key].errmsg);
-    return true;
-  }
-
-  // 修改绑定信息
-  async rebind({ _id }, { mobile, email, openid }) {
-    assert(_id);
-    assert(mobile || email || openid);
+  async update({ _id }, data) {
+    assert(_id, '_id不能为空');
 
     // TODO:检查数据是否存在
-    const entity = await this.model.findById(ObjectID(_id)).exec();
-    if (isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
-    const { account } = entity;
-    assert(account);
+    const entity = await this.mMem._findOne({ _id: ObjectID(_id) });
+    if (isNullOrUndefined(entity)) throw new BusinessError(ErrorCode.DATA_NOT_EXIST);
 
-    // 修改或者删除账户绑定信息
-    const data = trimData({ mobile, email, openid });
-    Object.keys(data).forEach(key => {
-      if (account[key] && data[key] === '@unbind') {
-        delete account[key];
-      } else {
-        account[key] = data[key];
-      }
-    });
-    if (isNullOrUndefined(account.mobile) && isNullOrUndefined(account.email)) {
-      throw new BusinessError(AccountError.empty.errcode, AccountError.empty.errmsg);
-    }
-    return await this.model.findByIdAndUpdate(ObjectID(_id), { $set: { account } }, { new: true }).exec();
+    // TODO: 修改数据
+    entity.set(trimData(data));
+    await entity.save();
+    return await this._findOne({ _id: ObjectID(_id) }, { password: 0 });
   }
 
-  // 修改账户密码
-  async passwd({ _id }, { oldpass, newpass }) {
-    assert(_id);
-    assert(oldpass);
-    assert(newpass);
+  // 帐号绑定
+  async bind(params) {
+    // console.log(params);
+    let { _id, type, account, operation } = params;
+    assert(_id, '_id不能为空');
+    assert(type, 'type不能为空');
+    assert(!isNullOrUndefined(operation), 'operation不能为空');
+    assert(operation === OperationType.UNBIND || account, 'account不能为空');
 
+    _id = ObjectID(_id);
     // TODO:检查数据是否存在
-    const entity = await this.model.findById(ObjectID(_id)).exec();
+    const entity = await this.mMem._findById(_id);
     if (isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
-    const { account } = entity;
-    assert(account);
-
-    // 校验口令信息
-    if (oldpass !== account.credential) {
-      throw new BusinessError(AccountError.errcode, AccountError.errmsg);
-    }
 
     // 保存修改
-    await this.model.findByIdAndUpdate(ObjectID(_id), { $set: { 'account.credential': newpass } }, { new: true }).exec();
+    const item = entity.accounts.find(p => p.type === type);
+    if (item) {
+      if (operation === OperationType.BIND) {
+        entity.accounts.id(item._id).remove();
+      } else if (operation === OperationType.UNBIND) {
+        item.bind = BindStatus.UNBIND;
+      } else if (operation === OperationType.VERIFY) {
+        item.bind = BindStatus.BIND;
+      }
+    }
+    if (operation === OperationType.BIND) {
+      entity.accounts.push({ type, account, bind: BindStatus.NEW });
+    }
+
+    await entity.save();
 
     return 'updated';
   }
 
-  // 查询信息
-  async fetch({ _id, sfzh, mobile, email, openid }) {
-    console.log(_id);
-    assert(_id || sfzh || mobile || email || openid);
+  // 登录验证，成功返回注册信息
+  async login({ username, password }) {
+    assert(username, 'username不能为空');
+    assert(password, 'password不能为空');
 
     // TODO:检查数据是否存在
-    let res;
-    if (_id) {
-      res = await this.model.findById(ObjectID(_id)).exec();
-    } else if (sfzh) {
-      res = await this.model.findOne({ sfzh }).exec();
-    } else {
-      const acc = { mobile, email, openid };
-      const filters = Object.keys(acc).map(key => ({ [key]: acc[key] }));
-      res = await this.model.findOne().or(filters).exec();
+    // 查询已注册用户
+    const entity = await this.mMem._findOne({ sfzh: username });
+    if (isNullOrUndefined(entity)) {
+      throw new BusinessError(ErrorCode.USER_NOT_EXIST);
     }
 
-    return res;
+    // 校验口令信息
+    if (password !== entity.password) throw new BusinessError(ErrorCode.BAD_PASSWORD);
+    return trimData(entity.toObject(), [ 'password', 'accounts', 'meta' ]);
   }
 
+  // 修改账户密码
+  async passwd({ _id, oldpass, newpass }) {
+    assert(_id, '_id不能为空');
+    assert(oldpass, 'oldpass不能为空');
+    assert(newpass, 'newpass不能为空');
+
+    _id = ObjectID(_id);
+    // TODO:检查数据是否存在
+    const entity = await this.mMem._findById(_id);
+    if (isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
+
+    // 校验口令信息
+    if (oldpass !== entity.password) {
+      throw new BusinessError(AccountError.oldpass.errcode, AccountError.oldpass.errmsg);
+    }
+
+    // 保存修改
+    await this.mMem._findOneAndUpdate({ _id }, { password: newpass });
+
+    return 'updated';
+  }
+
+  // 检查绑定帐号是否存在
+  async fetchByAccount({ type, account }) {
+    assert(account, 'account不能为空');
+
+    const entity = this.mMem._findOne({ accounts: { $elemMatch: trimData({ type, account, bind: BindStatus.BIND }) } }, { password: 0 });
+    return entity;
+  }
 }
 
 module.exports = MembershipService;

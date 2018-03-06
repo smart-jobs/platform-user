@@ -7,9 +7,13 @@ module.exports = app => {
   const { router, controller } = app;
   router.get('/', controller.home.index);
   // 用户注册
-  router.post('/member/create', controller.member.create);
-  router.post('/member/update', controller.member.update);
-  router.post('/member/passwd', controller.member.passwd);
-  router.post('/member/rebind', controller.member.rebind);
-  router.get('/member/fetch', controller.member.fetch);
+  router.post('/api/login', controller.member.login);
+  router.post('/api/passwd', controller.member.passwd);
+  router.post('/api/register/create', controller.member.create);
+  router.post('/api/register/update', controller.member.update);
+  router.post('/api/account/bind', controller.member.bind);
+  router.post('/api/account/unbind', controller.member.unbind);
+  router.post('/api/account/check', controller.member.checkAccount);
+
+  // 用户管理
 };

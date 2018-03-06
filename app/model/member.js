@@ -2,12 +2,30 @@
 const Schema = require('mongoose').Schema;
 const { ObjectId } = Schema.Types;
 
+// 代码
+const _codeSchema = new Schema({
+  code: { type: String, required: true, maxLength: 64 },
+  name: String,
+}, { _id: false });
+
+// 绑定账号
+const accountSchema = new Schema({
+  // 帐号类型：qq、weixin、email、mobile、weibo等
+  type: { type: String, required: true, maxLength: 64 },
+  // 账号绑定ID
+  account: { type: String, required: true, maxLength: 128 },
+  // 绑定状态: 0-未验证、1-已绑定、2-解除绑定
+  bind: { type: String, required: true, maxLength: 64, default: '0' },
+}, { timestamps: true });
+accountSchema.index({ type: 1, account: 1 });
+
 // 注册用户信息
 const SchemaDefine = {
   xm: { type: String, required: true, maxLength: 64 }, // 姓名
   xb: { type: String, required: true, maxLength: 64 }, // 性别
   sfzh: { type: String, required: true, maxLength: 64 }, // 身份证号
   status: { type: String, default: '0', maxLength: 64 }, // 用户状态: 0-正常；1-挂起；2-注销
+  password: { type: String, require: true, maxLength: 128 },
   // 当前学籍
   enrollment: {
     id: ObjectId,
@@ -34,12 +52,10 @@ const SchemaDefine = {
     postcode: { type: String, maxLength: 128 },
     address: { type: String, maxLength: 128 },
   },
-  // 登录信息
-  account: {
-    mobile: { type: String, require: true, maxLength: 64 },
-    email: { type: String, maxLength: 128 },
-    openid: { type: String, maxLength: 128 },
-    credential: { type: String, require: true, maxLength: 128 },
+  // 绑定账号信息
+  accounts: {
+    type: [ accountSchema ],
+    default: [],
   },
   meta: {
     state: {// 数据删除状态
@@ -49,11 +65,9 @@ const SchemaDefine = {
     comment: String,
   }
 };
-const schema = new Schema(SchemaDefine, { timestamps: true });
+const schema = new Schema(SchemaDefine, { timestamps: { createdAt: 'meta.createdAt', updatedAt: 'meta.updatedAt' } });
 schema.index({ sfzh: 1 }, { unique: true });
-schema.index({ 'account.mobile': 1 }, { unique: true });
-schema.index({ 'account.email': 1 }, { unique: true });
-schema.index({ 'account.openid': 1 }, { unique: true });
+schema.index({ 'accounts.type': 1, 'accounts.account': 1 });
 
 module.exports = app => {
   const { mongoose } = app;

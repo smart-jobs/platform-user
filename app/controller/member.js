@@ -1,14 +1,24 @@
 'use strict';
 
-const Controller = require('egg').Controller;
 const meta = require('./member.json');
-const { CrudController } = require('naf-framework-mongoose').controller;
+const { CrudController, NafController } = require('naf-framework-mongoose').Controllers;
 
-class MembershipController extends Controller {
+class MembershipController extends NafController {
   constructor(ctx) {
     super(ctx);
     this.service = this.ctx.service.member;
   }
+
+  async checkAccount() {
+    const { type, account } = this.ctx.request.body;
+    const entity = await this.service.fetchByAccount({ type, account });
+    if (entity) {
+      this.ctx.success({ result: 'existed' });
+    } else {
+      this.ctx.success({ result: 'ok' });
+    }
+  }
+
 }
 
 module.exports = CrudController(MembershipController, meta);

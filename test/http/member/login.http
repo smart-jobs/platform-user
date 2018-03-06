@@ -1,0 +1,23 @@
+###
+#用户登录
+POST http://localhost:7001/api/login HTTP/1.1
+#POST http://oa.chinahuian.cn/platform/user/member/passwd?_id=5a741e52ddccf17e5562d188 HTTP/1.1
+content-type: application/json
+Accept: application/json
+
+{
+  "username": "1234567890",
+  "password": "654321"
+}
+
+###
+#修改密码
+POST http://localhost:7001/api/passwd?_id=5a9e3ef64ab68b0f8c9f481d HTTP/1.1
+#POST http://oa.chinahuian.cn/platform/user/member/passwd?_id=5a741e52ddccf17e5562d188 HTTP/1.1
+content-type: application/json
+Accept: application/json
+
+{
+  "oldpass": "123456",
+  "newpass": "654321"
+}
