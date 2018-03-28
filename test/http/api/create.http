@@ -1,6 +1,6 @@
 #用户注册
-POST http://localhost:7001/api/register/create HTTP/1.1
-#POST http://oa.chinahuian.cn/platform/user/member/create HTTP/1.1
+#POST http://localhost:7001/api/register/create HTTP/1.1
+POST http://oa.chinahuian.cn/platform/user/register/create HTTP/1.1
 content-type: application/json
 Accept: application/json
 
@@ -22,7 +22,7 @@ Accept: application/json
 ###
 #信息修改
 POST http://localhost:7001/api/register/update?_id=5a9e3ef64ab68b0f8c9f481d HTTP/1.1
-#POST http://oa.chinahuian.cn/platform/user/member/update?_id=5a741e52ddccf17e5562d188 HTTP/1.1
+#POST http://oa.chinahuian.cn/platform/user/register/update?_id=5a741e52ddccf17e5562d188 HTTP/1.1
 content-type: application/json
 Accept: application/json
 
