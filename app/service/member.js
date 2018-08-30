@@ -2,9 +2,9 @@
 
 const ObjectID = require('mongodb').ObjectID;
 const assert = require('assert');
-const { isObject, isNullOrUndefined } = require('naf-core').Util;
+const { trimData, isNullOrUndefined } = require('naf-core').Util;
 const { BusinessError, ErrorCode } = require('naf-core').Error;
-const { trimData } = require('naf-core').Util;
+const { isObject } = require('lodash');
 const BaseService = require('./base.js');
 const { UserError, ErrorMessage, AccountError } = require('../util/error-code');
 const { OperationType, BindStatus, MembershipStatus } = require('../util/constants');
