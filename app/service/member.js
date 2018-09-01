@@ -13,8 +13,8 @@ const { OperationType, BindStatus, MembershipStatus } = require('../util/constan
 class MembershipService extends BaseService {
   constructor(ctx) {
     super(ctx, 'plat_user_member');
-    this.model = ctx.model.Member;
-    this.mMem = this._model(this.model);
+    this.model = this.ctx.model.Member;
+    this.mMem = this.model;
   }
 
   async create({ xm, xb, sfzh, password, contact }) {
@@ -29,7 +29,7 @@ class MembershipService extends BaseService {
     if (!isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_EXISTED, ErrorMessage.USER_EXISTED);
 
     // TODO:保存数据，初始记录不包含微信绑定信息
-    const res = await this.mMem._create({ xm, xb, sfzh, password, contact, status: MembershipStatus.NORMAL });
+    const res = await this.mMem.create({ xm, xb, sfzh, password, contact, status: MembershipStatus.NORMAL });
     return res;
   }
 
@@ -37,13 +37,13 @@ class MembershipService extends BaseService {
     assert(_id, '_id不能为空');
 
     // TODO:检查数据是否存在
-    const entity = await this.mMem._findOne({ _id: ObjectID(_id) });
+    const entity = await this.mMem.findOne({ _id: ObjectID(_id) }).exec();
     if (isNullOrUndefined(entity)) throw new BusinessError(ErrorCode.DATA_NOT_EXIST);
 
     // TODO: 修改数据
     entity.set(trimData(data));
     await entity.save();
-    return await this._findOne({ _id: ObjectID(_id) }, { password: 0 });
+    return await this.model.findOne({ _id: ObjectID(_id) }, { password: 0 }).exec();
   }
 
   // 帐号绑定
@@ -57,7 +57,7 @@ class MembershipService extends BaseService {
 
     _id = ObjectID(_id);
     // TODO:检查数据是否存在
-    const entity = await this.mMem._findById(_id);
+    const entity = await this.mMem.findById(_id).exec();
     if (isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
 
     // 保存修改
@@ -87,7 +87,7 @@ class MembershipService extends BaseService {
 
     // TODO:检查数据是否存在
     // 查询已注册用户
-    const entity = await this.mMem._findOne({ sfzh: username });
+    const entity = await this.mMem.findOne({ sfzh: username }).exec();
     if (isNullOrUndefined(entity)) {
       throw new BusinessError(ErrorCode.USER_NOT_EXIST);
     }
@@ -105,7 +105,7 @@ class MembershipService extends BaseService {
 
     _id = ObjectID(_id);
     // TODO:检查数据是否存在
-    const entity = await this.mMem._findById(_id);
+    const entity = await this.mMem.findById(_id).exec();
     if (isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
 
     // 校验口令信息
@@ -114,7 +114,7 @@ class MembershipService extends BaseService {
     }
 
     // 保存修改
-    await this.mMem._findOneAndUpdate({ _id }, { password: newpass });
+    await this.mMem.findOneAndUpdate({ _id }, { password: newpass }).exec();
 
     return 'updated';
   }
@@ -123,7 +123,7 @@ class MembershipService extends BaseService {
   async fetchByAccount({ type, account }) {
     assert(account, 'account不能为空');
 
-    const entity = this.mMem._findOne({ accounts: { $elemMatch: trimData({ type, account, bind: BindStatus.BIND }) } }, { password: 0 });
+    const entity = this.mMem.findOne({ accounts: { $elemMatch: trimData({ type, account, bind: BindStatus.BIND }) } }, { password: 0 }).exec();
     return entity;
   }
 }

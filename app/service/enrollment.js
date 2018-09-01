@@ -5,8 +5,8 @@ const BaseService = require('./base.js');
 class EnrollmentService extends BaseService {
   constructor(ctx) {
     super(ctx, 'plat_user_entrollment');
-    this.model = ctx.model.Enrollment;
-    this.mMember = ctx.model.Member;
+    this.model = this.ctx.model.Enrollment;
+    this.mMember = this.ctx.model.Member;
   }
 
   // async create() {

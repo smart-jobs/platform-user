@@ -4,7 +4,7 @@ const ObjectID = require('mongodb').ObjectID;
 const assert = require('assert');
 const { isNullOrUndefined } = require('naf-core').Util;
 const { BusinessError } = require('naf-core').Error;
-const { CrudService } = require('naf-framework-mongoose').Services;
+const { CrudService } = require('naf-framework-mongoose/lib/service');
 const { UserError, ErrorMessage } = require('../util/error-code');
 
 class BaseService extends CrudService {
