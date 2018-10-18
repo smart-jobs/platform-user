@@ -48,6 +48,9 @@ const SchemaDefine = {
     knslbdm: String, //	困难生类别代码
     knslb: String, //	困难生类别
     cxsy: String, //	城乡生源
+    szyx: String, // 所在院系
+    szbj: String, // 所在班级
+    xh: String, // 学号
     bz: String, // 备注
   },
   meta: {
