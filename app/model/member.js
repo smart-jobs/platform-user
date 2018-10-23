@@ -23,26 +23,8 @@ accountSchema.index({ type: 1, account: 1 });
 const SchemaDefine = {
   xm: { type: String, required: true, maxLength: 64 }, // 姓名
   xb: { type: String, required: true, maxLength: 64 }, // 性别
-  sfzh: { type: String, required: true, maxLength: 64 }, // 身份证号
   status: { type: String, default: '0', maxLength: 64 }, // 用户状态: 0-正常；1-挂起；2-注销
   password: { type: String, require: true, maxLength: 128 },
-  // 当前学籍
-  enrollment: {
-    id: ObjectId,
-    year: String,
-    type: String,
-    yxdm: String,
-    zydm: String,
-  },
-  // 所有学籍
-  enrollments: [{
-    id: ObjectId,
-    year: String,
-    type: String,
-    yxdm: String,
-    zydm: String,
-    stauts: String,
-  }],
   // 联系信息
   contact: {
     phone: { type: String, maxLength: 64 },
@@ -57,16 +39,38 @@ const SchemaDefine = {
     type: [ accountSchema ],
     default: [],
   },
+  // 当前学籍
+  enrollment: {
+    id: ObjectId,
+    year: String, // 毕业年份
+    type: String, // 学历类型：0-本专科；1-研究生；2-中专
+    xm: String, // 姓名
+    sfzh: String, // 身份证号
+    yxdm: String,
+    zydm: String,
+  },
+  // 所有学籍
+  enrollments: [{
+    id: ObjectId,
+    year: String,
+    type: String,
+    xm: String, // 姓名
+    sfzh: String, // 身份证号
+    yxdm: String,
+    zydm: String,
+    stauts: String,
+  }],
   meta: {
     state: {// 数据删除状态
       type: Number,
-      default: 0, // 0-正常学籍；1-标记删除
+      default: 0, // 0-正常数据；1-标记删除
     },
     comment: String,
   }
 };
 const schema = new Schema(SchemaDefine, { timestamps: { createdAt: 'meta.createdAt', updatedAt: 'meta.updatedAt' } });
-schema.index({ sfzh: 1 }, { unique: true });
+schema.index({ 'enrollment.sfzh': 1 });
+schema.index({ 'accounts.account': 1 });
 schema.index({ 'accounts.type': 1, 'accounts.account': 1 });
 
 module.exports = app => {

@@ -1,6 +1,6 @@
 {
   "create": {
-    "requestBody": ["xm", "xb", "sfzh", "password", "contact"]
+    "requestBody": ["xm", "xb", "sfzh", "password", "contact", "account"]
   },
   "update": {
     "query": ["_id"],
