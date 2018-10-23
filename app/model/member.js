@@ -2,12 +2,6 @@
 const Schema = require('mongoose').Schema;
 const { ObjectId } = Schema.Types;
 
-// 代码
-const _codeSchema = new Schema({
-  code: { type: String, required: true, maxLength: 64 },
-  name: String,
-}, { _id: false });
-
 // 绑定账号
 const accountSchema = new Schema({
   // 帐号类型：qq、weixin、email、mobile、weibo等
