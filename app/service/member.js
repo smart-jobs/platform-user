@@ -5,7 +5,6 @@ const assert = require('assert');
 const _ = require('lodash');
 const { trimData, isNullOrUndefined } = require('naf-core').Util;
 const { BusinessError, ErrorCode } = require('naf-core').Error;
-const { isObject } = require('lodash');
 const BaseService = require('./base.js');
 const { UserError, ErrorMessage, AccountError } = require('../util/error-code');
 const { OperationType, BindStatus, MembershipStatus } = require('../util/constants');
@@ -23,13 +22,13 @@ class MembershipService extends BaseService {
     assert(xb, 'xb性别不能为空');
     // assert(sfzh, 'sfzh不能为空');
     assert(password, 'password不能为空');
-    assert(isObject(contact), 'contact必须为对象');
+    assert(_.isObject(contact), 'contact必须为对象');
     assert(_.isObject(account) || _.isString(account), 'account必须为对象或字符串');
 
     let type = 'weixin';
     if (_.isObject(account)) {
       ({ type = 'weixin', account } = account);
-      assert(isObject(account), 'account参数必须包含account属性');
+      assert(account, 'account参数必须包含account属性');
     } else if (_.isString(account)) {
       assert(account, 'account不能为空');
     }

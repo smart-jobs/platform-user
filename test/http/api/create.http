@@ -1,6 +1,6 @@
 #用户注册
-#POST http://localhost:7001/api/register/create HTTP/1.1
-POST http://oa.chinahuian.cn/platform/user/register/create HTTP/1.1
+POST http://localhost:8101/api/register/create HTTP/1.1
+#POST http://oa.chinahuian.cn/platform/user/register/create HTTP/1.1
 content-type: application/json
 Accept: application/json
 
@@ -16,6 +16,10 @@ Accept: application/json
     "weixin": "zsf",
     "postcode": "000000",
     "address": "湖北省武当山"
+  },
+  "account": {
+    "type": "mobile",
+    "account": "13500000000"
   }
 }
 
