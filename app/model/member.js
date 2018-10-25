@@ -1,6 +1,7 @@
 'use strict';
 const Schema = require('mongoose').Schema;
 const { ObjectId } = Schema.Types;
+const { Secret } = require('naf-framework-mongoose/lib/model/schema');
 
 // 绑定账号
 const accountSchema = new Schema({
@@ -18,7 +19,7 @@ const SchemaDefine = {
   xm: { type: String, required: true, maxLength: 64 }, // 姓名
   xb: { type: String, required: true, maxLength: 64 }, // 性别
   status: { type: String, default: '0', maxLength: 64 }, // 用户状态: 0-正常；1-挂起；2-注销
-  password: { type: String, required: true, maxLength: 128, select: false },
+  passwd: { type: Secret, select: false },
   // 联系信息
   contact: {
     phone: { type: String, maxLength: 64 },

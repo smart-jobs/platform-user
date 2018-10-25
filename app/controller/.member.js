@@ -32,5 +32,15 @@ module.exports = {
   "passwd": {
     "query": ["_id"],
     "requestBody": ["oldpass", "newpass"]
-  }
+  },
+  "info": {
+    "params": ["_id"]
+  },
+  "simple": {
+    "params": ["_id"],
+    "options": {
+      "simple": true
+    },
+    "service": "info"
+  },
 }
