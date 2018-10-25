@@ -159,7 +159,7 @@ class MembershipService extends BaseService {
         : { xm: 1, xb: 1, contact: 1, enrollment: 1 }).exec();
     if (entity) {
       const res = entity.toObject();
-      return { xm: res.xm, xb: res.xb, ...res.enrollment, ...res.contact };
+      return { name: res.xm, xb: res.xb, ...res.enrollment, ...res.contact };
     }
     return entity;
   }
