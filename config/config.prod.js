@@ -3,13 +3,6 @@
 module.exports = () => {
   const config = exports = {};
 
-  // add your config here
-  config.cluster = {
-    listen: {
-      port: 8101,
-    },
-  };
-
   // mongoose config
   config.mongoose = {
     url: 'mongodb://localhost:27018/platform',

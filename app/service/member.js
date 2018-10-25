@@ -40,8 +40,10 @@ class MembershipService extends BaseService {
     if (!isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_EXISTED, ErrorMessage.USER_EXISTED);
 
     // TODO:保存数据，初始记录不包含微信绑定信息
-    const res = await this.mMem.create({ xm, xb, sfzh, password, contact, status: MembershipStatus.NORMAL,
-      accounts: [{ type, account, bind: BindStatus.BIND }] });
+    const res = await this.mMem.create({ xm, xb, sfzh, contact, status: MembershipStatus.NORMAL,
+      accounts: [{ type, account, bind: BindStatus.BIND }],
+      passwd: { type: 'plain', secret: password },
+    });
     return res;
   }
 
@@ -55,7 +57,7 @@ class MembershipService extends BaseService {
     // TODO: 修改数据
     entity.set(trimData(data));
     await entity.save();
-    return await this.model.findOne({ _id: ObjectID(_id) }, { password: 0 }).exec();
+    return await this.model.findOne({ _id: ObjectID(_id) }).exec();
   }
 
   // 帐号绑定
@@ -100,14 +102,16 @@ class MembershipService extends BaseService {
     // TODO:检查数据是否存在
     // 查询已注册用户
     // const entity = await this.mMem.findOne({ sfzh: username }).exec();
-    const entity = await this.fetchByAccount({ type: 'weixin', account: username });
+    let entity = await this.fetchByAccount({ type: 'weixin', account: username });
     if (isNullOrUndefined(entity)) {
       throw new BusinessError(ErrorCode.USER_NOT_EXIST);
     }
 
+    entity = await this.mMem.findById(entity._id, '+passwd').exec();
+
     // 校验口令信息
-    if (password !== entity.password) throw new BusinessError(ErrorCode.BAD_PASSWORD);
-    return trimData(entity.toObject(), [ 'password', 'accounts', 'meta' ]);
+    if (entity.passwd && password !== entity.passwd.secret) throw new BusinessError(ErrorCode.BAD_PASSWORD);
+    return trimData(entity.toObject(), [ 'accounts', 'meta' ]);
   }
 
   // 修改账户密码
@@ -118,16 +122,21 @@ class MembershipService extends BaseService {
 
     _id = ObjectID(_id);
     // TODO:检查数据是否存在
-    const entity = await this.mMem.findById(_id).exec();
+    const entity = await this.mMem.findById(_id, '+passwd').exec();
     if (isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
 
     // 校验口令信息
-    if (oldpass !== entity.password) {
+    if (entity.passwd && oldpass !== entity.passwd.secret) {
       throw new BusinessError(AccountError.oldpass.errcode, AccountError.oldpass.errmsg);
     }
 
     // 保存修改
-    await this.mMem.findOneAndUpdate({ _id }, { password: newpass }).exec();
+    if (entity.passwd) {
+      entity.passwd.secret = newpass;
+    } else {
+      entity.passwd = { type: 'plain', secret: newpass };
+    }
+    await entity.save();
 
     return 'updated';
   }
@@ -136,7 +145,7 @@ class MembershipService extends BaseService {
   async fetchByAccount({ type, account }) {
     assert(account, 'account不能为空');
 
-    const entity = this.mMem.findOne({ accounts: { $elemMatch: trimData({ type, account, bind: BindStatus.BIND }) } }, { password: 0 }).exec();
+    const entity = this.mMem.findOne({ accounts: { $elemMatch: trimData({ type, account, bind: BindStatus.BIND }) } }).exec();
     return entity;
   }
 }

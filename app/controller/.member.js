@@ -1,4 +1,4 @@
-{
+module.exports = {
   "create": {
     "requestBody": ["xm", "xb", "sfzh", "password", "contact", "account"]
   },

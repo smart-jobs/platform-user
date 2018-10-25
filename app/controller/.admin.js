@@ -1,4 +1,4 @@
-{
+module.exports = {
   "delete": {
     "query": ["_id"]
   },

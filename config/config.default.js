@@ -8,6 +8,13 @@ module.exports = appInfo => {
 
   // add your config here
   // config.middleware = [];
+
+  config.cluster = {
+    listen: {
+      port: 8101,
+    },
+  };
+
   config.errorMongo = {
     details: true,
   };
