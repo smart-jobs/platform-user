@@ -1,6 +1,6 @@
 'use strict';
 const Schema = require('mongoose').Schema;
-const { ObjectId } = Schema.Types;
+const { ObjectId } = require('mongoose').Types;
 
 // 注册学籍信息
 const SchemaDefine = {

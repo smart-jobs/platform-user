@@ -1,6 +1,6 @@
 'use strict';
 
-// const ObjectID = require('mongodb').ObjectID;
+// const ObjectId = require('mongoose').Types;
 // const assert = require('assert');
 // const { BusinessError, ErrorCode } = require('naf-core').Error;
 // const { isNullOrUndefined } = require('naf-core').Util;

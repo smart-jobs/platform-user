@@ -34,10 +34,10 @@ module.exports = {
     "requestBody": ["oldpass", "newpass"]
   },
   "info": {
-    "params": ["_id"]
+    "query": ["_id"]
   },
   "simple": {
-    "params": ["_id"],
+    "query": ["_id"],
     "options": {
       "simple": true
     },

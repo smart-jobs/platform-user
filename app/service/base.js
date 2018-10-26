@@ -1,6 +1,6 @@
 'use strict';
 
-const ObjectID = require('mongodb').ObjectID;
+const { ObjectId } = require('mongoose').Types;
 const assert = require('assert');
 const { isNullOrUndefined } = require('naf-core').Util;
 const { BusinessError } = require('naf-core').Error;
@@ -14,11 +14,11 @@ class BaseService extends CrudService {
     assert(id);
 
     // TODO:检查数据是否存在
-    const entity = await this.model.findOne({ _id: ObjectID(id) }).exec();
+    const entity = await this.model.findOne({ _id: ObjectId(id) }).exec();
     if (isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
 
     // TODO:修改数据删除状态，不直接删除
-    await this.model.fondOneAndUpdate({ _id: ObjectID(id) },
+    await this.model.fondOneAndUpdate({ _id: ObjectId(id) },
       { $set: { 'meta.state': 1, 'meta.updateTime': new Date(), 'meta.comment': '删除数据' } }).exec();
 
     return 'deleted';

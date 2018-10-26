@@ -1,6 +1,6 @@
 'use strict';
 
-const { ObjectId } = require('mongoose').Schema.Types;
+const { ObjectId } = require('mongoose').Types;
 const assert = require('assert');
 const _ = require('lodash');
 const { trimData, isNullOrUndefined } = require('naf-core').Util;
@@ -152,7 +152,7 @@ class MembershipService extends BaseService {
   async info({ _id, simple }) {
     assert(_id, '_id不能为空');
 
-    const entity = this.mMem.findOne({ _id: ObjectId(_id) },
+    const entity = await this.mMem.findById({ _id: ObjectId(_id) },
       simple ?
         { xm: 1, xb: 1, 'enrollment.year': 1, 'enrollment.yxdm': 1, 'enrollment.zydm': 1, }
         : { xm: 1, xb: 1, contact: 1, enrollment: 1 }).exec();
