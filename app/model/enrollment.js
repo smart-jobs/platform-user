@@ -1,6 +1,12 @@
 'use strict';
 const Schema = require('mongoose').Schema;
-const { ObjectId } = require('mongoose').Types;
+
+// 学籍关联账号信息
+const mshpSchema = new Schema({
+  id: String, // 用户注册信息ID
+  status: { type: String, default: '0' }, // 学籍注册状态：0-正常；1-升学
+}, { timestamps: true, _id: false });
+mshpSchema.index({ id: 1 });
 
 // 注册学籍信息
 const SchemaDefine = {
@@ -11,11 +17,6 @@ const SchemaDefine = {
   xb: { type: String, required: true, maxLength: 64 }, // 性别
   sfzh: { type: String, required: true, maxLength: 64 }, // 身份证号
   ksh: { type: String, maxLength: 64 }, // 考生号
-  membership: { // 用户注册信息
-    userid: ObjectId, // 用户注册信息ID
-    createTime: Date, // 注册时间（关联学籍数据时间）
-    status: String, // 学籍注册状态：0-正常；1-升学
-  },
   // 当前学籍
   enrollment: {
     ksh: String, // 考生号
@@ -53,6 +54,7 @@ const SchemaDefine = {
     xh: String, // 学号
     bz: String, // 备注
   },
+  mshp: mshpSchema, // 用户注册信息
   meta: {
     state: {// 学籍数据状态
       type: Number,
@@ -61,7 +63,7 @@ const SchemaDefine = {
     comment: String,
   }
 };
-const schema = new Schema(SchemaDefine, { timestamps: true });
+const schema = new Schema(SchemaDefine, { timestamps: { createdAt: 'meta.createdAt', updatedAt: 'meta.updatedAt' } });
 schema.index({ year: 1 });
 schema.index({ year: 1, yxdm: 1 });
 schema.index({ yxdm: 1 });

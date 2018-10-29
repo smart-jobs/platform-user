@@ -1,6 +1,5 @@
 'use strict';
 
-const { ObjectId } = require('mongoose').Types;
 const assert = require('assert');
 const _ = require('lodash');
 const { trimData, isNullOrUndefined } = require('naf-core').Util;
@@ -15,6 +14,7 @@ class MembershipService extends BaseService {
     super(ctx, 'plat_user_member');
     this.model = this.ctx.model.Member;
     this.mMem = this.model;
+    this.mEnrl = this.ctx.model.Enrollment;
   }
 
   async create({ xm, xb, sfzh, password, contact, account }) {
@@ -46,31 +46,30 @@ class MembershipService extends BaseService {
     return res;
   }
 
-  async update({ _id }, data) {
-    assert(_id, '_id不能为空');
+  async update({ id }, data) {
+    assert(id, 'id不能为空');
 
     // TODO:检查数据是否存在
-    const entity = await this.mMem.findOne({ _id: ObjectId(_id) }).exec();
+    const entity = await this.mMem.findById(id).exec();
     if (isNullOrUndefined(entity)) throw new BusinessError(ErrorCode.DATA_NOT_EXIST);
 
     // TODO: 修改数据
     entity.set(trimData(data));
     await entity.save();
-    return await this.model.findOne({ _id: ObjectId(_id) }).exec();
+    return entity;
   }
 
   // 帐号绑定
   async bind(params) {
     // console.log(params);
-    let { _id, type, account, operation } = params;
-    assert(_id, '_id不能为空');
+    const { id, type, account, operation } = params;
+    assert(id, 'id不能为空');
     assert(type, 'type不能为空');
     assert(!isNullOrUndefined(operation), 'operation不能为空');
     assert(operation === OperationType.UNBIND || account, 'account不能为空');
 
-    _id = ObjectId(_id);
     // TODO:检查数据是否存在
-    const entity = await this.mMem.findById(_id).exec();
+    const entity = await this.mMem.findById(id).exec();
     if (isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
 
     // 保存修改
@@ -94,19 +93,29 @@ class MembershipService extends BaseService {
   }
 
   // 登录验证，成功返回注册信息
-  async login({ username, password }) {
-    assert(username, 'username不能为空');
+  async login({ id, username, password }) {
+    if (!id) {
+      assert(username, 'username不能为空');
+    }
     assert(password, 'password不能为空');
 
     // TODO:检查数据是否存在
     // 查询已注册用户
     // const entity = await this.mMem.findOne({ sfzh: username }).exec();
-    let entity = await this.fetchByAccount({ type: 'weixin', account: username });
+    let entity;
+    if (id) {
+      entity = await this.mMem.findById(id, '+passwd').exec();
+    } else {
+      entity = await this.fetchByAccount({ type: 'weixin', account: username });
+    }
     if (isNullOrUndefined(entity)) {
       throw new BusinessError(ErrorCode.USER_NOT_EXIST);
     }
 
-    entity = await this.mMem.findById(entity._id, '+passwd').exec();
+    if (!id) {
+      // fetchByAccount结果不包含passwd
+      entity = await this.mMem.findById(entity._id, '+passwd').exec();
+    }
 
     // 校验口令信息
     if (entity.passwd && password !== entity.passwd.secret) throw new BusinessError(ErrorCode.BAD_PASSWORD);
@@ -114,14 +123,13 @@ class MembershipService extends BaseService {
   }
 
   // 修改账户密码
-  async passwd({ _id, oldpass, newpass }) {
-    assert(_id, '_id不能为空');
+  async passwd({ id, oldpass, newpass }) {
+    assert(id, 'id不能为空');
     assert(oldpass, 'oldpass不能为空');
     assert(newpass, 'newpass不能为空');
 
-    _id = ObjectId(_id);
     // TODO:检查数据是否存在
-    const entity = await this.mMem.findById(_id, '+passwd').exec();
+    const entity = await this.mMem.findById(id, '+passwd').exec();
     if (isNullOrUndefined(entity)) throw new BusinessError(UserError.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
 
     // 校验口令信息
@@ -149,10 +157,10 @@ class MembershipService extends BaseService {
   }
 
   // 获取用户信息
-  async info({ _id, simple }) {
-    assert(_id, '_id不能为空');
+  async info({ id, simple }) {
+    assert(id, 'id不能为空');
 
-    const entity = await this.mMem.findById({ _id: ObjectId(_id) },
+    const entity = await this.mMem.findById(id,
       simple ?
         { xm: 1, xb: 1, 'enrollment.year': 1, 'enrollment.yxdm': 1, 'enrollment.zydm': 1, }
         : { xm: 1, xb: 1, contact: 1, enrollment: 1 }).exec();
@@ -160,6 +168,30 @@ class MembershipService extends BaseService {
       const res = entity.toObject();
       return { name: res.xm, xb: res.xb, ...res.enrollment, ...res.contact };
     }
+    return entity;
+  }
+
+  // 绑定学籍
+  async enroll({ id }, { year, type, yxdm, sfzh }) {
+    assert(id, 'id不能为空');
+
+    // TODO:检查数据是否存在
+    const entity = await this.mMem.findById(id).exec();
+    if (isNullOrUndefined(entity)) throw new BusinessError(ErrorCode.DATA_NOT_EXIST);
+
+    // TODO:检查学籍数据
+    const enrollment = await this.mEnrl.findOne({ year, type, yxdm, sfzh }).exec();
+    if (isNullOrUndefined(enrollment)) throw new BusinessError(ErrorCode.DATA_NOT_EXIST, '学籍信息不存在');
+    if (enrollment.xm !== entity.xm) throw new BusinessError(ErrorCode.SERVICE_FAULT, '学籍信息和注册信息不匹配');
+
+    const { id: enrl_id, xm, zydm } = enrollment;
+    // TODO: 修改注册数据
+    entity.enrollment = { id: enrl_id, year, type, xm, sfzh, yxdm, zydm };
+    await entity.save();
+    // TODO: 修改学籍数据
+    enrollment.mshp = { id };
+    await enrollment.save();
+
     return entity;
   }
 }

@@ -3,11 +3,15 @@ module.exports = {
     "requestBody": ["xm", "xb", "sfzh", "password", "contact", "account"]
   },
   "update": {
-    "query": ["_id"],
-    "requestBody": ["contact.phone", "contact.email", "contact.qq", "contact.weixin", "contact.postcode", "contact.address"]
+    "query": ["id"],
+    "requestBody": ["contact.mobile", "contact.email", "contact.qq", "contact.weixin", "contact.postcode", "contact.address"]
+  },
+  "enroll": {
+    "query": ["id"],
+    "requestBody": ["year", "type", "yxdm", "sfzh"]
   },
   "bind": {
-    "query": ["_id"],
+    "query": ["id"],
     "requestBody": [
       "type", "account"
     ],
@@ -17,7 +21,7 @@ module.exports = {
     "service": "bind"
   },
   "unbind": {
-    "query": ["_id"],
+    "query": ["id"],
     "requestBody": [
       "type", "account"
     ],
@@ -27,20 +31,24 @@ module.exports = {
     "service": "bind"
   },
   "login": {
+    "query": ["id"],
     "requestBody": ["username", "password"]
   },
   "passwd": {
-    "query": ["_id"],
+    "query": ["id"],
     "requestBody": ["oldpass", "newpass"]
   },
   "info": {
-    "query": ["_id"]
+    "query": ["id"]
   },
   "simple": {
-    "query": ["_id"],
+    "query": ["id"],
     "options": {
       "simple": true
     },
     "service": "info"
+  },
+  "fetchByAccount": {
+    "query": [ "type", "account" ],
   },
 }

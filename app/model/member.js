@@ -18,11 +18,12 @@ accountSchema.index({ type: 1, account: 1 });
 const SchemaDefine = {
   xm: { type: String, required: true, maxLength: 64 }, // 姓名
   xb: { type: String, required: true, maxLength: 64 }, // 性别
+  sfzh: { type: String, required: false, maxLength: 64 }, // 身份证号
   status: { type: String, default: '0', maxLength: 64 }, // 用户状态: 0-正常；1-挂起；2-注销
   passwd: { type: Secret, select: false },
   // 联系信息
   contact: {
-    phone: { type: String, maxLength: 64 },
+    mobile: { type: String, maxLength: 64 },
     email: { type: String, maxLength: 128 },
     qq: { type: String, maxLength: 128 },
     weixin: { type: String, maxLength: 128 },
@@ -36,7 +37,7 @@ const SchemaDefine = {
   },
   // 当前学籍
   enrollment: {
-    id: ObjectId,
+    id: String,
     year: String, // 毕业年份
     type: String, // 学历类型：0-本专科；1-研究生；2-中专
     xm: String, // 姓名

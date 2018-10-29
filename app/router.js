@@ -11,9 +11,11 @@ module.exports = app => {
   router.post('/api/passwd', controller.member.passwd);
   router.post('/api/register/create', controller.member.create);
   router.post('/api/register/update', controller.member.update);
+  router.post('/api/register/enroll', controller.member.enroll);
   router.post('/api/account/bind', controller.member.bind);
   router.post('/api/account/unbind', controller.member.unbind);
   router.post('/api/account/check', controller.member.checkAccount);
+  router.get('/api/account/fetch', controller.member.fetchByccount);
   router.get('/api/info', controller.member.info);
   router.get('/api/simple', controller.member.simple);
 
