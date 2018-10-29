@@ -15,7 +15,7 @@ module.exports = app => {
   router.post('/api/account/bind', controller.member.bind);
   router.post('/api/account/unbind', controller.member.unbind);
   router.post('/api/account/check', controller.member.checkAccount);
-  router.get('/api/account/fetch', controller.member.fetchByccount);
+  router.get('/api/account/fetch', controller.member.fetchByAccount);
   router.get('/api/info', controller.member.info);
   router.get('/api/simple', controller.member.simple);
 
