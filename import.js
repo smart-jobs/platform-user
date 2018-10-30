@@ -23,8 +23,6 @@ async function doWork() {
     console.log('请指定要导入的文件名:\n node import.js xxxx.csv');
     return;
   }
-  const category = args[1];
-
   console.log(`正在读取${args[0]}数据...`);
   const lines = await new Promise((resolve, reject) => {
     const res = [];
@@ -54,11 +52,11 @@ async function doWork() {
     const line = lines[i];
     const cols = line.split(',');
     if (cols.length < 2) continue;
-    const data = { code: cols[0], name: cols[1], category, group: '0', stauts: '0', order: 0 };
+    const data = { code: cols[0], name: cols[1], group: '0', stauts: '0', order: 0 };
 
     console.log(line);
     try {
-      const entity = await db.findOne({ code: cols[0], category });
+      const entity = await db.findOne({ code: cols[0] });
       if (!entity) {
         await db.insertOne(data);
         count++;

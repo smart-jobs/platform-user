@@ -37,14 +37,15 @@ const SchemaDefine = {
   },
   // 当前学籍
   enrollment: {
-    id: String,
-    year: String, // 毕业年份
-    type: String, // 学历类型：0-本专科；1-研究生；2-中专
-    xm: String, // 姓名
-    sfzh: String, // 身份证号
-    yxdm: String,
-    zydm: String,
+    id: { type: String, require: true },
+    year: { type: String, require: true }, // 毕业年份
+    type: { type: String, require: true }, // 学历类型：0-本专科；1-研究生；2-中专
+    xm: { type: String, require: true }, // 姓名
+    sfzh: { type: String, require: true }, // 身份证号
+    yxdm: { type: String, require: true },
+    zydm: { type: String, require: true },
   },
+
   // 所有学籍
   enrollments: [{
     id: ObjectId,

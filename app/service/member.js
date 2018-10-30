@@ -184,7 +184,7 @@ class MembershipService extends BaseService {
     if (isNullOrUndefined(enrollment)) throw new BusinessError(ErrorCode.DATA_NOT_EXIST, '学籍信息不存在');
     if (enrollment.xm !== entity.xm) throw new BusinessError(ErrorCode.SERVICE_FAULT, '学籍信息和注册信息不匹配');
 
-    const { id: enrl_id, xm, zydm } = enrollment;
+    const { id: enrl_id, xm, enrollment: { zydm } } = enrollment;
     // TODO: 修改注册数据
     entity.enrollment = { id: enrl_id, year, type, xm, sfzh, yxdm, zydm };
     await entity.save();
