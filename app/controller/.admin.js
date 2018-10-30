@@ -16,5 +16,9 @@ module.exports = {
   "unbind": {
     "query": ["id"],
     "requestBody": ["mobile", "email", "openid"]
-  }
+  },
+  // 导入学籍
+  "import": {
+    "requestBody": ["mobile", "email", "openid"]
+  },
 }
