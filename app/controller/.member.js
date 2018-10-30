@@ -7,8 +7,8 @@ module.exports = {
     "requestBody": ["contact.mobile", "contact.email", "contact.qq", "contact.weixin", "contact.postcode", "contact.address"]
   },
   "enroll": {
-    "query": ["id"],
-    "requestBody": ["year", "type", "yxdm", "sfzh"]
+    "query": ["!id"],
+    "requestBody": ["!year", "!type", "!yxdm", "!sfzh"]
   },
   "bind": {
     "query": ["id"],
