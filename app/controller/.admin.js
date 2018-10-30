@@ -1,20 +1,20 @@
 module.exports = {
   "delete": {
-    "query": ["id"]
+    "query": ["!id"]
   },
   "update": {
-    "query": ["id"],
+    "query": ["!id"],
     "requestBody": ["contact.phone", "contact.email", "contact.qq", "contact.weixin", "contact.postcode", "contact.address"]
   },
   "fetch": {
-    "query": ["id", "sfzh", "email", "mobile"]
+    "query": ["!id", "sfzh", "email", "mobile"]
   },
   "reset": {
-    "query": ["id"],
+    "query": ["!id"],
     "requestBody": ["mobile", "email", "openid"]
   },
   "unbind": {
-    "query": ["id"],
+    "query": ["!id"],
     "requestBody": ["mobile", "email", "openid"]
   },
   // 导入学籍

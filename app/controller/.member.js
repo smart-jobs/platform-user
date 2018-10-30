@@ -3,7 +3,7 @@ module.exports = {
     "requestBody": ["xm", "xb", "sfzh", "password", "contact", "account"]
   },
   "update": {
-    "query": ["id"],
+    "query": ["!id"],
     "requestBody": ["contact.mobile", "contact.email", "contact.qq", "contact.weixin", "contact.postcode", "contact.address"]
   },
   "enroll": {
@@ -11,7 +11,7 @@ module.exports = {
     "requestBody": ["!year", "!type", "!yxdm", "!sfzh"]
   },
   "bind": {
-    "query": ["id"],
+    "query": ["!id"],
     "requestBody": [
       "type", "account"
     ],
@@ -21,7 +21,7 @@ module.exports = {
     "service": "bind"
   },
   "unbind": {
-    "query": ["id"],
+    "query": ["!id"],
     "requestBody": [
       "type", "account"
     ],
@@ -31,18 +31,18 @@ module.exports = {
     "service": "bind"
   },
   "login": {
-    "query": ["id"],
+    "query": ["!id"],
     "requestBody": ["username", "password"]
   },
   "passwd": {
-    "query": ["id"],
+    "query": ["!id"],
     "requestBody": ["oldpass", "newpass"]
   },
   "info": {
-    "query": ["id"]
+    "query": ["!id"]
   },
   "simple": {
-    "query": ["id"],
+    "query": ["!id"],
     "options": {
       "simple": true
     },
