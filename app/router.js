@@ -6,18 +6,18 @@
 module.exports = app => {
   const { router, controller } = app;
   router.get('/', controller.home.index);
-  // 用户注册
-  router.post('/api/login', controller.member.login);
-  router.post('/api/passwd', controller.member.passwd);
-  router.post('/api/register/create', controller.member.create);
-  router.post('/api/register/update', controller.member.update);
-  router.post('/api/register/enroll', controller.member.enroll);
-  router.post('/api/account/bind', controller.member.bind);
-  router.post('/api/account/unbind', controller.member.unbind);
-  router.post('/api/account/check', controller.member.checkAccount);
-  router.get('/api/account/fetch', controller.member.fetchByAccount);
-  router.get('/api/info', controller.member.info);
-  router.get('/api/simple', controller.member.simple);
 
-  // 用户管理
+  // 前端接口
+  router.post('/api/acct/create', controller.account.create); // 【全站】创建微信用户
+  router.post('/api/acct/update', controller.account.update); // 【全站】修改用户信息
+  router.post('/api/acct/bind', controller.account.bind); // 【分站】微信用户绑定企业
+  router.post('/api/acct/unbind', controller.account.unbind); // 【分站】微信用户解绑企业
+  router.get('/api/acct/fetch', controller.account.fetch); // 【分站】获得账号信息
+  router.get('/api/acct/info', controller.account.fetch); // 【分站】获得用户信息
+  router.post('/api/register', controller.register.register); // 【分站】省内学生注册学籍
+  router.post('/api/create', controller.register.create); // 【主站】省外学生创建注册信息
+  router.post('/api/:id/update', controller.register.update); // 【分站】修改信息
+  router.get('/api/:id/fetch', controller.register.fetch); // 【分站】获得注册信息
+  router.get('/api/info', controller.register.info); // 【全站】获得用户信息详情
+  router.get('/api/simple', controller.register.simple); // 【全站】获得用户信息
 };
