@@ -15,6 +15,22 @@ class AccountService extends CrudService {
     this.mReg = this.ctx.model.Register;
   }
 
+  // 用户微信登录，返回用户信息和学籍信息
+  async login({ openid }) {
+    assert(openid, 'openid不能为空');
+
+    // TODO: 【全站服务】
+    this.tenant = 'global';
+
+    // TODO: 检查用户是否存在
+    const user = await this.model.findOne({ openid }).exec();
+    if (!user) throw new BusinessError(UserError.USER_NOT_EXIST, '用户不存在');
+
+    // TODO: 查询绑定关系
+    const reg = await this.ctx.model.Register.findOne({ openid }).exec(); // global 模式下必须用这种方式使用model
+    return { user, reg };
+  }
+
   // 注册用户通行证
   async create({ openid }, { name, mobile, email }) {
     assert(openid, 'openid不能为空');

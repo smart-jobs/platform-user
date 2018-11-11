@@ -1,17 +1,10 @@
 module.exports = {
-  // 省内学生登记注册
+  // 学生登记注册
   "register": {
     "parameters": {
       "query": ["!openid"],
     },
-    "requestBody": ["!year", "!sfzh"]
-  },
-  // 省外用户创建注册信息
-  "create": {
-    "parameters": {
-      "query": ["!openid"],
-    },
-    "requestBody": ["!year", "!sfzh", "!xm", "!xb", "!yxmc", "!zymc", "!xl"]
+    "requestBody": ["!year", "!sfzh", "xm", "xb", "yxmc", "zymc", "xl"]
   },
   "query": {
     "parameters": {

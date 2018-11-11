@@ -16,8 +16,14 @@ class RegisterService extends CrudService {
     this.mInfo = this.ctx.model.Infobase;
   }
 
-  // 【用户】省内学生登记学籍
-  async register({ openid }, { year, sfzh }) {
+  async register({ openid }, data) {
+    // 【用户】省外学生登记学籍
+    if (this.tenant === 'master') {
+      return await this.create({ openid }, data);
+    }
+
+    // 【用户】省内学生登记学籍
+    const { year, sfzh } = data;
     assert(openid, 'openid不能为空');
     assert(year, 'year不能为空');
     assert(sfzh, 'sfzh不能为空');
@@ -59,7 +65,7 @@ class RegisterService extends CrudService {
   }
 
   // 【用户】省外学生创建注册信息
-  async create({ openid }, { year, sfzh, xm, xb, yxmc, zymc, xl }) {
+  async registerOther({ openid }, { year, sfzh, xm, xb, yxmc, zymc, xl }) {
     assert(openid, 'openid不能为空');
     assert(year, 'year不能为空');
     assert(sfzh, 'sfzh不能为空');
