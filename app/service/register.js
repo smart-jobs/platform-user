@@ -102,7 +102,8 @@ class RegisterService extends CrudService {
     assert(id, 'id不能为空');
 
     // 全站查询
-    const model = this.app.tenantModel('global').Register;
+    this.tenant = 'global';
+    const model = this.ctx.model.Register; // global 模式下必须用这种方式使用model
     const entity = await model.findById(id).exec();
     if (entity) {
       let res = entity.toObject();
