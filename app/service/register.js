@@ -35,7 +35,7 @@ class RegisterService extends CrudService {
     }
 
     // TODO: 检查是否已注册
-    let reg = await this.model.findOne({ year, sfzh }).exec();
+    let reg = await this.model.findOne({ year, 'info.sfzh': sfzh }).exec();
     if (reg) {
       throw new BusinessError(UserError.REG_EXISTED, ErrorMessage.REG_EXISTED);
     }
@@ -84,7 +84,7 @@ class RegisterService extends CrudService {
     // TODO: 省外学生信息注册到主站
     const model = this.app.tenantModel('master').Register;
     // TODO: 检查是否已注册
-    let reg = await model.findOne({ year, sfzh }).exec();
+    let reg = await model.findOne({ year, 'info.sfzh': sfzh }).exec();
     if (reg) {
       throw new BusinessError(UserError.REG_EXISTED, '身份证号已被注册');
     }
