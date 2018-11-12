@@ -25,7 +25,7 @@ class AccountService extends CrudService {
     // TODO: 检查用户是否存在
     const user = await this.model.findOne({ openid }).exec();
     if (!user) throw new BusinessError(UserError.USER_NOT_EXIST, '用户不存在');
-    
+
     // TODO: 查询注册信息
     const reg = await this.ctx.model.Register.findById(user.userid).exec(); // global 模式下必须用这种方式使用model
     return { user, reg };
