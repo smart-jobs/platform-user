@@ -19,7 +19,7 @@ class RegisterService extends CrudService {
   async register({ openid }, data) {
     // 【用户】省外学生登记学籍
     if (this.tenant === 'master') {
-      return await this.create({ openid }, data);
+      return await this.registerOther({ openid }, data);
     }
 
     // 【用户】省内学生登记学籍
@@ -42,8 +42,8 @@ class RegisterService extends CrudService {
 
     // TODO: 检查学籍信息
     const info = await this.mInfo.findOne({ year, sfzh });
-    if (!isNullOrUndefined(reg)) {
-      throw new BusinessError(UserError.INFO_EXISTED, ErrorMessage.INFO_EXISTED);
+    if (isNullOrUndefined(info)) {
+      throw new BusinessError(UserError.INFO_NOT_EXIST, ErrorMessage.INFO_NOT_EXIST);
     }
     if (bind.name !== info.xm) {
       throw new BusinessError(UserError.INFO_NOT_MATCH, ErrorMessage.INFO_NOT_MATCH);
@@ -91,7 +91,7 @@ class RegisterService extends CrudService {
 
     // TODO: 创建数据
     reg = await model.create({
-      year, type: 3,
+      year, type: '3',
       info: { xm, xb, sfzh, yxmc, zymc, xl }
     });
 

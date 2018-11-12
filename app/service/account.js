@@ -11,7 +11,7 @@ const { UserError, ErrorMessage } = require('../util/error-code');
 class AccountService extends CrudService {
   constructor(ctx) {
     super(ctx, 'plat_user_account');
-    this.model = this.ctx.model.Weixin;
+    this.model = this.ctx.model.Account;
     this.mReg = this.ctx.model.Register;
   }
 
@@ -25,9 +25,9 @@ class AccountService extends CrudService {
     // TODO: 检查用户是否存在
     const user = await this.model.findOne({ openid }).exec();
     if (!user) throw new BusinessError(UserError.USER_NOT_EXIST, '用户不存在');
-
-    // TODO: 查询绑定关系
-    const reg = await this.ctx.model.Register.findOne({ openid }).exec(); // global 模式下必须用这种方式使用model
+    
+    // TODO: 查询注册信息
+    const reg = await this.ctx.model.Register.findById(user.userid).exec(); // global 模式下必须用这种方式使用model
     return { user, reg };
   }
 

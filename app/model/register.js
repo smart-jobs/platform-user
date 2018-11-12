@@ -33,5 +33,5 @@ schema.plugin(metaPlugin);
 
 module.exports = app => {
   const { mongoose } = app;
-  return mongoose.model('Member', schema, 'plat_user_register');
+  return mongoose.model('Register', schema, 'plat_user_register');
 };

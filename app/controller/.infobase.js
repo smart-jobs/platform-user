@@ -1,7 +1,7 @@
 module.exports = {
   "findBySfzh": {
     "parameters": {
-      "params": ["!year", "!sfzh"],
+      "query": ["!year", "!sfzh"],
     },
     "service": "fetch",
   },
