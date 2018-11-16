@@ -21,4 +21,7 @@ module.exports = app => {
   router.get('/api/simple', controller.register.simple); // 【全站】获得用户信息
   router.all('/api/login', controller.account.login); // 【全站】用户微信登录
   router.get('/api/base/find', controller.infobase.findBySfzh); // 【全站】通过身份证号查询学籍信息
+
+  // 管理接口
+  router.post('/admin/base/import', controller.infobase.import); // 【分站】导入学籍数据
 };
