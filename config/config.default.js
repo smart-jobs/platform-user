@@ -7,7 +7,7 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1517455121740_7922';
 
   // add your config here
-  config.middleware = [ 'accessLog' ];
+  // config.middleware = [];
 
   config.cluster = {
     listen: {
@@ -37,7 +37,8 @@ module.exports = appInfo => {
 
   config.accessLog = {
     enable: true,
-  }
+    body: true,
+  };
 
   return config;
 };

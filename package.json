@@ -10,7 +10,7 @@
     "egg": "^2.14.0",
     "egg-scripts": "^2.10.0",
     "lodash": "^4.17.11",
-    "naf-framework-mongoose": "^0.5.11"
+    "naf-framework-mongoose": "^0.5.13"
   },
   "devDependencies": {
     "autod": "^3.0.1",
