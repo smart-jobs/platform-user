@@ -7,7 +7,7 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1517455121740_7922';
 
   // add your config here
-  // config.middleware = [];
+  config.middleware = [ 'accessLog' ];
 
   config.cluster = {
     listen: {
@@ -34,6 +34,10 @@ module.exports = appInfo => {
       useCreateIndex: true,
     },
   };
+
+  config.accessLog = {
+    enable: true,
+  }
 
   return config;
 };
