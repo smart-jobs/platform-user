@@ -13,7 +13,7 @@ const SchemaDefine = {
   baseid: { type: String, required: false, maxLength: 64 }, // 学籍数据ID
   remark: { type: String, maxLength: 256 }, // 备注
 };
-const schema = new Schema(SchemaDefine);
+const schema = new Schema(SchemaDefine, { toJSON: { virtuals: true } });
 schema.index({ openid: 1 }, { unique: true });
 schema.index({ mobile: 1 });
 schema.index({ corpname: 1 });

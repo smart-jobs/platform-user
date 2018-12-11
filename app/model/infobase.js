@@ -42,7 +42,7 @@ const SchemaDefine = {
   xh: String, // 学号
   bz: String, // 备注
 };
-const schema = new Schema(SchemaDefine);
+const schema = new Schema(SchemaDefine, { toJSON: { virtuals: true } });
 schema.index({ year: 1 });
 schema.index({ yxdm: 1 });
 schema.index({ sfzh: 1 });

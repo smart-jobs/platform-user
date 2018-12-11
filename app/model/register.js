@@ -24,7 +24,7 @@ const SchemaDefine = {
   info: InfoSchema,
   remark: { type: String, maxLength: 256 }, // 备注
 };
-const schema = new Schema(SchemaDefine, { 'multi-tenancy': true });
+const schema = new Schema(SchemaDefine, { 'multi-tenancy': true, toJSON: { virtuals: true } });
 schema.index({ year: 1 });
 schema.index({ baseid: 1 });
 schema.index({ sfzh: 1 });
