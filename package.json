@@ -7,9 +7,6 @@
     "framework": "naf-framework-mongoose"
   },
   "dependencies": {
-    "egg": "^2.20.1",
-    "egg-scripts": "^2.11.0",
-    "lodash": "^4.17.11",
     "naf-framework-mongoose": "^0.5.18"
   },
   "devDependencies": {
