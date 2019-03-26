@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * 导入学籍
+ * 导入学籍（CSV格式）
  */
 
 const readline = require('readline');
@@ -21,7 +21,7 @@ const dbName = 'platform';
 async function doWork() {
   const args = process.argv.splice(2);
   if (args.length !== 2) {
-    console.log('请指定要导入的文件名:\n node import.js xxxx.csv 0');
+    console.log('请指定要导入的文件名:\n node import\csv.js xxxx.csv 0');
     return;
   }
   const type = args[1];

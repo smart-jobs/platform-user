@@ -11,7 +11,7 @@ const InfoSchema = new Schema({
   yxmc: { type: String, required: true, maxLength: 64 }, // 院校名称
   zymc: { type: String, required: false, maxLength: 64 }, // 专业名称
   xl: { type: String, required: false, maxLength: 64 }, // 学历
-  yxdm: { type: String, required: true, maxLength: 64 }, // 院校代码
+  yxdm: { type: String, required: false, maxLength: 64 }, // 院校代码
 }, { _id: false, timestamps: true });
 InfoSchema.index({ sfzh: 1 });
 
