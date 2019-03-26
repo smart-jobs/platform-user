@@ -7,6 +7,7 @@
     "framework": "naf-framework-mongoose"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "moment": "^2.24.0",
     "naf-framework-mongoose": "^0.5.18",
     "xlsx": "^0.14.1"

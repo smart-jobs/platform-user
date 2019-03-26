@@ -50,10 +50,10 @@ class RegisterService extends CrudService {
     }
 
     // TODO: 创建数据
-    const { xm, xb, yxmc, zymc, xl, yxdm } = info;
+    const { xm, xb, yxmc, zymc, xl, yxdm, zydm, xldm } = info;
     reg = await this.model.create({
       year, type: info.type, baseid: info.id,
-      info: { xm, xb, sfzh, yxmc, zymc, xl, yxdm }
+      info: { xm, xb, sfzh, yxmc, zymc, xl, yxdm, zydm, xldm }
     });
 
     // TODO: 保存绑定关系

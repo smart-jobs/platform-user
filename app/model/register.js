@@ -12,6 +12,8 @@ const InfoSchema = new Schema({
   zymc: { type: String, required: false, maxLength: 64 }, // 专业名称
   xl: { type: String, required: false, maxLength: 64 }, // 学历
   yxdm: { type: String, required: false, maxLength: 64 }, // 院校代码
+  zydm: { type: String, required: false, maxLength: 64 }, // 专业代码
+  xldm: { type: String, required: false, maxLength: 64 }, // 学历代码
 }, { _id: false, timestamps: true });
 InfoSchema.index({ sfzh: 1 });
 
