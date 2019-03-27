@@ -45,9 +45,10 @@ class RegisterService extends CrudService {
     if (isNullOrUndefined(info)) {
       throw new BusinessError(UserError.INFO_NOT_EXIST, ErrorMessage.INFO_NOT_EXIST);
     }
-    if (bind.name !== info.xm) {
-      throw new BusinessError(UserError.INFO_NOT_MATCH, ErrorMessage.INFO_NOT_MATCH);
-    }
+    // TODO: 去掉学籍信息验证
+    // if (bind.name !== info.xm) {
+    //   throw new BusinessError(UserError.INFO_NOT_MATCH, ErrorMessage.INFO_NOT_MATCH);
+    // }
 
     // TODO: 创建数据
     const { xm, xb, yxmc, zymc, xl, yxdm, zydm, xldm } = info;
