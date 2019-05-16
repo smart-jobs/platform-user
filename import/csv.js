@@ -8,6 +8,7 @@ const readline = require('readline');
 const fs = require('fs');
 const iconv = require('iconv-lite');
 const MongoClient = require('mongodb').MongoClient;
+const moment = require('moment');
 
 // Connection URL
 // const url = 'mongodb://root:Ziyouyanfa%23%40!@localhost:27017';
@@ -16,12 +17,12 @@ const url = 'mongodb://root:Ziyouyanfa%23%40!@192.168.1.170:27018';
 
 // Database Name
 const dbName = 'platform';
-
+const batch = moment().format('YYYYMMDDHHmm');
 
 async function doWork() {
   const args = process.argv.splice(2);
   if (args.length !== 2) {
-    console.log('请指定要导入的文件名:\n node import\csv.js xxxx.csv 0');
+    console.log('请指定要导入的文件名:\n node importcsv.js xxxx.csv 0');
     return;
   }
   const type = args[1];
@@ -30,7 +31,7 @@ async function doWork() {
     const res = [];
     const rl = readline.createInterface({
       input: fs.createReadStream(args[0]).pipe(iconv.decodeStream('GBK')),
-      crlfDelay: Infinity,
+      crlfDelay: Infinity
     });
 
     rl.on('line', async line => {
@@ -50,15 +51,19 @@ async function doWork() {
   const client = await MongoClient.connect(url, { poolSize: 10 });
   const db = client.db(dbName).collection('plat_user_infobase');
   let count = 0;
+  let update = 0;
   const headers = lines[0].split(',');
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i];
     const cols = line.split(',');
     if (cols.length < 2) continue;
-    const data = headers.reduce((p, c, i) => {
-      p[c] = cols[i];
-      return p;
-    }, { type, xl: '本科生毕业' });
+    const data = headers.reduce(
+      (p, c, i) => {
+        p[c] = cols[i].trim();
+        return p;
+      },
+      { type, xl: '本科生毕业', batch }
+    );
 
     console.log(line);
     try {
@@ -70,6 +75,7 @@ async function doWork() {
       } else {
         await db.updateOne({ _id: entity._id }, { $set: data });
         console.log(`update: ${line}`);
+        update++;
       }
     } catch (err) {
       console.log(`处理错误： ${line}`);
@@ -79,7 +85,11 @@ async function doWork() {
   if (client) {
     client.close();
   }
-  console.log(`导入完成，共导入${count}条数据！`);
+  if (update === 0) {
+    console.log(`导入完成，共导入${count}条数据！`);
+  } else {
+    console.log(`导入完成，共导入${count}条数据，更新${update}条数据！`);
+  }
 }
 
 doWork();
